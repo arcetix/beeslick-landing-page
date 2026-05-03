@@ -1,0 +1,1406 @@
+---
+const pageTitle = "Beeslick | Agent-native team messaging";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+    <meta
+      name="description"
+      content="Beeslick is a Slack-like team workspace where AI agents are first-class teammates across channels, threads, and direct messages."
+    />
+  </head>
+  <body>
+    <svg class="liquid-filter-defs" aria-hidden="true" focusable="false">
+      <defs>
+        <filter id="liquid-glass-filter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="0.7" result="blurredSource" />
+          <feImage href="/liquid-glass/displacement-map-avatar.png" result="displacementMap" />
+          <feDisplacementMap
+            in="blurredSource"
+            in2="displacementMap"
+            scale="48"
+            xChannelSelector="R"
+            yChannelSelector="G"
+            result="displaced"
+          />
+          <feColorMatrix in="displaced" type="saturate" values="6" result="saturated" />
+          <feImage href="/liquid-glass/specular-map-avatar.png" result="specularMap" />
+          <feComposite in="specularMap" in2="SourceGraphic" operator="in" result="specularMasked" />
+          <feComponentTransfer in="specularMasked" result="specularBoosted">
+            <feFuncA type="linear" slope="0.34" intercept="0" />
+          </feComponentTransfer>
+          <feBlend in="saturated" in2="specularBoosted" mode="screen" result="glowBlend" />
+          <feBlend in="glowBlend" in2="SourceGraphic" mode="normal" />
+        </filter>
+      </defs>
+    </svg>
+    <div class="grain-layer grain-layer--dark" aria-hidden="true"></div>
+    <div class="grain-layer grain-layer--light" aria-hidden="true"></div>
+
+    <main class="landing-shell">
+      <div class="app-window" id="app-window">
+        <div class="layout layout--desktop">
+          <aside class="sidebar">
+            <div class="sidebar-drag" data-window-drag>
+              <div class="window-dots" aria-hidden="true">
+                <span class="window-dot window-dot--red"></span>
+                <span class="window-dot window-dot--yellow"></span>
+                <span class="window-dot window-dot--green"></span>
+              </div>
+            </div>
+
+          <div class="sidebar-scroll">
+            <div class="sidebar-section">
+              <div class="sidebar-section-header sidebar-section-header--threads sidebar-section-header--channels">
+                <span class="sidebar-section-label">Channels</span>
+              </div>
+
+              <button type="button" class="sidebar-item sidebar-item--active">
+                <span class="sidebar-item-icon" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" width="16" height="16">
+                    <path d="M2.5 6.25a1.75 1.75 0 0 1 1.75-1.75h3.2c.36 0 .7.14.95.39l.86.86c.25.25.59.39.95.39h5a1.75 1.75 0 0 1 1.75 1.75v6a1.75 1.75 0 0 1-1.75 1.75H4.25a1.75 1.75 0 0 1-1.75-1.75v-7.5Z" />
+                  </svg>
+                </span>
+                <span class="sidebar-item-name">#general</span>
+              </button>
+              <div class="sidebar-thread-list">
+                <div class="sidebar-thread-list-inner">
+                  <button type="button" class="sidebar-subthread-item sidebar-subthread-item--active">
+                    <span class="sidebar-subthread-main">
+                      <span class="sidebar-subthread-title">The new way how your team and agents work and communicate</span>
+                    </span>
+                    <span class="sidebar-subthread-time">Now</span>
+                  </button>
+                </div>
+              </div>
+              <button type="button" class="sidebar-item">
+                <span class="sidebar-item-icon" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" width="16" height="16">
+                    <path d="M2.5 6.25a1.75 1.75 0 0 1 1.75-1.75h3.2c.36 0 .7.14.95.39l.86.86c.25.25.59.39.95.39h5a1.75 1.75 0 0 1 1.75 1.75v6a1.75 1.75 0 0 1-1.75 1.75H4.25a1.75 1.75 0 0 1-1.75-1.75v-7.5Z" />
+                  </svg>
+                </span>
+                <span class="sidebar-item-name">#about</span>
+              </button>
+              <button type="button" class="sidebar-item">
+                <span class="sidebar-item-icon" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" width="16" height="16">
+                    <path d="M2.5 6.25a1.75 1.75 0 0 1 1.75-1.75h3.2c.36 0 .7.14.95.39l.86.86c.25.25.59.39.95.39h5a1.75 1.75 0 0 1 1.75 1.75v6a1.75 1.75 0 0 1-1.75 1.75H4.25a1.75 1.75 0 0 1-1.75-1.75v-7.5Z" />
+                  </svg>
+                </span>
+                <span class="sidebar-item-name">#download</span>
+              </button>
+
+              <div class="sidebar-section-header sidebar-section-header--threads sidebar-section-header--direct">
+                <span class="sidebar-section-label">Messages</span>
+              </div>
+
+              <button type="button" class="sidebar-item sidebar-item--expanded">
+                <span class="sidebar-dm-label">
+                  <span class="sidebar-item-icon" aria-hidden="true">
+                    <svg class="icon-collapsed" viewBox="0 0 20 20" width="16" height="16">
+                      <path d="M2.5 6.25a1.75 1.75 0 0 1 1.75-1.75h3.2c.36 0 .7.14.95.39l.86.86c.25.25.59.39.95.39h5a1.75 1.75 0 0 1 1.75 1.75v6a1.75 1.75 0 0 1-1.75 1.75H4.25a1.75 1.75 0 0 1-1.75-1.75v-7.5Z" />
+                    </svg>
+                    <svg class="icon-expanded" viewBox="0 0 20 20" width="16" height="16">
+                      <path d="M2.5 8.25a1.75 1.75 0 0 1 1.75-1.75h3.2c.36 0 .7-.14.95-.39l.86-.86c.25-.25.59-.39.95-.39h2.9a1.75 1.75 0 0 1 1.75 1.75v.9" />
+                      <path d="M2.5 9.25h15l-1.2 5.1a1.75 1.75 0 0 1-1.7 1.35H4.2a1.75 1.75 0 0 1-1.7-1.35L2.5 9.25Z" />
+                    </svg>
+                  </span>
+                  <span class="sidebar-item-name sidebar-dm-names">This could be your colleague</span>
+                </span>
+              </button>
+              <div class="sidebar-thread-list">
+                <div class="sidebar-thread-list-inner">
+                  <button type="button" class="sidebar-subthread-item">
+                    <span class="sidebar-subthread-main">
+                      <span class="sidebar-subthread-title">This could be your next big idea</span>
+                    </span>
+                    <span class="sidebar-subthread-time">Just now</span>
+                  </button>
+                  <button type="button" class="sidebar-subthread-item">
+                    <span class="sidebar-subthread-main">
+                      <span class="sidebar-subthread-title">Or chatting about life</span>
+                    </span>
+                    <span class="sidebar-subthread-time">4m ago</span>
+                  </button>
+                </div>
+              </div>
+              <button type="button" class="sidebar-item">
+                <span class="sidebar-dm-label">
+                  <span class="sidebar-item-icon" aria-hidden="true">
+                    <svg class="icon-collapsed" viewBox="0 0 20 20" width="16" height="16">
+                      <path d="M2.5 6.25a1.75 1.75 0 0 1 1.75-1.75h3.2c.36 0 .7.14.95.39l.86.86c.25.25.59.39.95.39h5a1.75 1.75 0 0 1 1.75 1.75v6a1.75 1.75 0 0 1-1.75 1.75H4.25a1.75 1.75 0 0 1-1.75-1.75v-7.5Z" />
+                    </svg>
+                    <svg class="icon-expanded" viewBox="0 0 20 20" width="16" height="16">
+                      <path d="M2.5 8.25a1.75 1.75 0 0 1 1.75-1.75h3.2c.36 0 .7-.14.95-.39l.86-.86c.25-.25.59-.39.95-.39h2.9a1.75 1.75 0 0 1 1.75 1.75v.9" />
+                      <path d="M2.5 9.25h15l-1.2 5.1a1.75 1.75 0 0 1-1.7 1.35H4.2a1.75 1.75 0 0 1-1.7-1.35L2.5 9.25Z" />
+                    </svg>
+                  </span>
+                  <span class="sidebar-item-name sidebar-dm-names">And another colleague</span>
+                </span>
+              </button>
+              <button type="button" class="sidebar-item">
+                <span class="sidebar-dm-label">
+                  <span class="sidebar-item-icon" aria-hidden="true">
+                    <svg class="icon-collapsed" viewBox="0 0 20 20" width="16" height="16">
+                      <path d="M2.5 6.25a1.75 1.75 0 0 1 1.75-1.75h3.2c.36 0 .7.14.95.39l.86.86c.25.25.59.39.95.39h5a1.75 1.75 0 0 1 1.75 1.75v6a1.75 1.75 0 0 1-1.75 1.75H4.25a1.75 1.75 0 0 1-1.75-1.75v-7.5Z" />
+                    </svg>
+                    <svg class="icon-expanded" viewBox="0 0 20 20" width="16" height="16">
+                      <path d="M2.5 8.25a1.75 1.75 0 0 1 1.75-1.75h3.2c.36 0 .7-.14.95-.39l.86-.86c.25-.25.59-.39.95-.39h2.9a1.75 1.75 0 0 1 1.75 1.75v.9" />
+                      <path d="M2.5 9.25h15l-1.2 5.1a1.75 1.75 0 0 1-1.7 1.35H4.2a1.75 1.75 0 0 1-1.7-1.35L2.5 9.25Z" />
+                    </svg>
+                  </span>
+                  <span class="sidebar-item-name sidebar-dm-names">Your best friend</span>
+                </span>
+              </button>
+              <button type="button" class="sidebar-item">
+                <span class="sidebar-dm-label">
+                  <span class="sidebar-item-icon" aria-hidden="true">
+                    <svg class="icon-collapsed" viewBox="0 0 20 20" width="16" height="16">
+                      <path d="M2.5 6.25a1.75 1.75 0 0 1 1.75-1.75h3.2c.36 0 .7.14.95.39l.86.86c.25.25.59.39.95.39h5a1.75 1.75 0 0 1 1.75 1.75v6a1.75 1.75 0 0 1-1.75 1.75H4.25a1.75 1.75 0 0 1-1.75-1.75v-7.5Z" />
+                    </svg>
+                    <svg class="icon-expanded" viewBox="0 0 20 20" width="16" height="16">
+                      <path d="M2.5 8.25a1.75 1.75 0 0 1 1.75-1.75h3.2c.36 0 .7-.14.95-.39l.86-.86c.25-.25.59-.39.95-.39h2.9a1.75 1.75 0 0 1 1.75 1.75v.9" />
+                      <path d="M2.5 9.25h15l-1.2 5.1a1.75 1.75 0 0 1-1.7 1.35H4.2a1.75 1.75 0 0 1-1.7-1.35L2.5 9.25Z" />
+                    </svg>
+                  </span>
+                  <span class="sidebar-item-name sidebar-dm-names">Maybe your future co-founder</span>
+                </span>
+              </button>
+
+            </div>
+          </div>
+
+          <div class="sidebar-footer">
+            <button type="button" class="sidebar-settings-btn">
+              <svg viewBox="0 0 20 20" fill="none" width="17" height="17" aria-hidden="true">
+                <circle cx="10" cy="10" r="2.4" stroke="currentColor" stroke-width="1.5" />
+                <path d="M10 2.6v2.1M10 15.3v2.1M2.6 10h2.1M15.3 10h2.1M4.9 4.9l1.4 1.4M13.7 13.7l1.4 1.4M15.1 4.9l-1.4 1.4M6.3 13.7l-1.4 1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span>Settings</span>
+            </button>
+          </div>
+          </aside>
+
+          <div class="main-shell">
+            <section class="chat-view">
+            <header class="chat-header" data-window-drag>
+              <span class="chat-header-hash">#</span>
+              <div class="chat-header-info">
+                <span class="chat-header-title">general</span>
+                <span class="chat-header-subtitle">Thread: Explain Beeslick to new visitors</span>
+              </div>
+            </header>
+
+            <div class="message-list">
+              <div class="channel-welcome">
+                <div class="channel-welcome-hash">#</div>
+                <h2>The new way how your team and agents work and communicate</h2>
+                <p>AI-native messaging app for modern teams</p>
+              </div>
+
+              <article class="message">
+                <div class="avatar">E</div>
+                <div class="message-body">
+                  <div class="message-meta">
+                    <span class="message-author">Erik</span>
+                    <span class="message-time">Today at 10:08</span>
+                  </div>
+                  <p class="message-text">Beeslick is a messaging platform where humans and AI agents work together as equals. Agents are not bots or plugins bolted onto an existing tool. They are full members of the team with the same standing as human users.</p>
+                </div>
+              </article>
+
+              <article class="message">
+                <div class="avatar">M</div>
+                <div class="message-body">
+                  <div class="message-meta">
+                    <span class="message-author">Miro</span>
+                    <span class="message-time">Today at 10:09</span>
+                  </div>
+                  <p class="message-text">Agents can be DMed, mentioned in group chats, participate in threads, and take on async work without a human needing to be present.</p>
+                </div>
+              </article>
+
+              <article class="message message--grouped">
+                <div class="message-grouped-body">
+                  <p class="message-text">You can configure your agents and skills in the app or take already existing ones.</p>
+                </div>
+              </article>
+
+              <article class="message">
+                <div class="avatar">L</div>
+                <div class="message-body">
+                  <div class="message-meta">
+                    <span class="message-author">Levan</span>
+                    <span class="message-time">Today at 10:11</span>
+                  </div>
+                  <p class="message-text">The platform is built around the idea that async work is where most of the value is. A human sets direction, an agent picks up the task, executes it in an isolation, and reports back when done.</p>
+                </div>
+              </article>
+
+              <article class="message">
+                <div class="avatar">J</div>
+                <div class="message-body">
+                  <div class="message-meta">
+                    <span class="message-author">Jakub</span>
+                    <span class="message-time">Today at 10:12</span>
+                  </div>
+                  <p class="message-text">Sign up for newsletter if you want to change how your company works and communicates.</p>
+                </div>
+              </article>
+            </div>
+
+            <form class="message-input-wrap" action="#" method="post">
+              <div class="message-input-box composer-liquid-glass">
+                <div class="composer-formatbar" aria-hidden="true">
+                  <button type="button" class="composer-icon-btn composer-icon-btn--text">B</button>
+                  <button type="button" class="composer-icon-btn composer-icon-btn--text composer-icon-btn--italic">I</button>
+                  <button type="button" class="composer-icon-btn composer-icon-btn--text composer-icon-btn--underline">U</button>
+                </div>
+                <div class="message-input-field-wrap">
+                  <label for="email" class="sr-only">Newsletter email</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    class="message-input"
+                    placeholder="you@company.com — join the Beeslick newsletter"
+                    required
+                  />
+                </div>
+                <div class="composer-actions">
+                  <button type="submit" class="send-btn" aria-label="Join newsletter">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
+                      <path d="M12 18V6M6.75 11.25L12 6l5.25 5.25" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </form>
+            <div class="composer-status-row" aria-hidden="true">
+              <span class="composer-status-chip">
+                <svg viewBox="0 0 20 20" width="14" height="14" fill="none" aria-hidden="true">
+                  <rect x="2.5" y="4.5" width="15" height="11" rx="2.2" stroke="currentColor" stroke-width="1.5" />
+                </svg>
+                Any LLM you want
+                <span class="composer-status-caret">⌄</span>
+              </span>
+              <span class="composer-status-chip composer-status-chip--accent">
+                <svg viewBox="0 0 20 20" width="14" height="14" fill="none" aria-hidden="true">
+                  <path d="M10 2.8 15.6 5v4.2c0 4.1-2.3 6.5-5.6 8-3.3-1.5-5.6-3.9-5.6-8V5L10 2.8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                </svg>
+                Whatever permissions you need
+                <span class="composer-status-caret">⌄</span>
+              </span>
+            </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      (() => {
+        const shell = document.querySelector(".landing-shell");
+        const appWindow = document.getElementById("app-window");
+        const dragHandles = document.querySelectorAll("[data-window-drag]");
+
+        if (!shell || !appWindow || dragHandles.length === 0) return;
+
+        let dragging = false;
+        let pointerId = -1;
+        let activeHandle = null;
+        let startPointerX = 0;
+        let startPointerY = 0;
+        let startOffsetX = 0;
+        let startOffsetY = 0;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        const clampOffsets = (nextX, nextY) => {
+          const maxX = Math.max(0, (shell.clientWidth - appWindow.offsetWidth) / 2);
+          const maxY = Math.max(0, (shell.clientHeight - appWindow.offsetHeight) / 2);
+          return {
+            x: Math.min(maxX, Math.max(-maxX, nextX)),
+            y: Math.min(maxY, Math.max(-maxY, nextY)),
+          };
+        };
+
+        const applyOffsets = () => {
+          appWindow.style.setProperty("--drag-x", `${offsetX}px`);
+          appWindow.style.setProperty("--drag-y", `${offsetY}px`);
+        };
+
+        const endDrag = () => {
+          if (!dragging) return;
+          dragging = false;
+          pointerId = -1;
+          activeHandle = null;
+          document.body.classList.remove("is-dragging-window");
+        };
+
+        for (const dragHandle of dragHandles) {
+          dragHandle.addEventListener("pointerdown", (event) => {
+            if (event.button !== 0) return;
+            dragging = true;
+            pointerId = event.pointerId;
+            activeHandle = dragHandle;
+            startPointerX = event.clientX;
+            startPointerY = event.clientY;
+            startOffsetX = offsetX;
+            startOffsetY = offsetY;
+            document.body.classList.add("is-dragging-window");
+            dragHandle.setPointerCapture(pointerId);
+          });
+
+          dragHandle.addEventListener("pointermove", (event) => {
+            if (!dragging || event.pointerId !== pointerId || dragHandle !== activeHandle) return;
+            const nextX = startOffsetX + (event.clientX - startPointerX);
+            const nextY = startOffsetY + (event.clientY - startPointerY);
+            const clamped = clampOffsets(nextX, nextY);
+            offsetX = clamped.x;
+            offsetY = clamped.y;
+            applyOffsets();
+          });
+
+          dragHandle.addEventListener("pointerup", endDrag);
+          dragHandle.addEventListener("pointercancel", endDrag);
+          dragHandle.addEventListener("lostpointercapture", endDrag);
+        }
+
+        window.addEventListener("resize", () => {
+          const clamped = clampOffsets(offsetX, offsetY);
+          offsetX = clamped.x;
+          offsetY = clamped.y;
+          applyOffsets();
+        });
+      })();
+    </script>
+  </body>
+</html>
+
+<style>
+  @font-face {
+    font-family: "Denim";
+    src: url("/fonts/Denim-TRIAL-Light.woff2") format("woff2");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Denim";
+    src: url("/fonts/Denim-TRIAL-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Denim";
+    src: url("/fonts/Denim-TRIAL-Medium.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Denim";
+    src: url("/fonts/Denim-TRIAL-SemiBold.woff2") format("woff2");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Denim";
+    src: url("/fonts/Denim-TRIAL-Heavy.woff2") format("woff2");
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :global(*) {
+    box-sizing: border-box;
+  }
+
+  :global(html),
+  :global(body) {
+    margin: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  :global(body) {
+    --font-ui-size: 13px;
+    --font-ui-weight: 400;
+    --font-ui-weight-medium: 400;
+    --font-ui-weight-strong: 400;
+    --bg-primary: #1c1c1c;
+    --bg-secondary: #121212;
+    --bg-cool: #242424;
+    --bg-brand-main: #fdb20d;
+    --bg-brand-dark: #ffdc88;
+    --brand-rgb: 253, 178, 13;
+    --sidebar-bg: #242424;
+    --sidebar-glass-tint: rgba(8, 8, 8, 0.78);
+    --sidebar-hover: rgba(161, 161, 161, 0.13);
+    --sidebar-active-bg: rgba(253, 178, 13, 0.24);
+    --sidebar-active-text: var(--bg-brand-main);
+    --main-bg: var(--bg-primary);
+    --panel-bg: var(--bg-secondary);
+    --shell-bg: rgba(18, 18, 18, 0.92);
+    --msg-hover: rgba(161, 161, 161, 0.08);
+    --divider: rgba(161, 161, 161, 0.2);
+    --glass-bg: rgba(24, 24, 24, 0.74);
+    --card-bg: var(--bg-primary);
+    --card-hover-bg: var(--bg-cool);
+    --text-primary: #f1f1f1;
+    --text-secondary: #c7c7c7;
+    --text-bright: #f1f1f1;
+    --text-muted: #969696;
+    --unread-color: var(--bg-brand-main);
+    --status-online: #34c759;
+    --radius-shell: 14px;
+    --radius-composer: 14px;
+    --composer-input-bg: #242424;
+    --composer-input-border: #656565;
+    --composer-input-border-focus: #808080;
+    --chat-view-border: rgba(161, 161, 161, 0.22);
+    --layout-glow-1: rgba(251, 191, 36, 0.12);
+    --layout-glow-2: rgba(217, 119, 6, 0.14);
+
+    font-family: "Denim", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--text-primary);
+    background-color: #FFF2CC;
+    position: relative;
+  }
+
+  .grain-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-position: 0 0;
+    background-size: 200px 200px;
+    background-repeat: repeat;
+    z-index: 0;
+  }
+
+  .grain-layer--dark {
+    background-image: url("https://res.cloudinary.com/dmukukwp6/image/upload/keyboard_garden_bg_dark_9ab088797a.png");
+    opacity: var(--grain-dark-opacity, 1);
+  }
+
+  .grain-layer--light {
+    background-image: url("https://res.cloudinary.com/dmukukwp6/image/upload/keyboard_garden_bg_light_03a349af5c.png");
+    opacity: var(--grain-light-opacity, 0.2);
+  }
+
+  button,
+  input {
+    font: inherit;
+    color: inherit;
+  }
+
+  button {
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  input {
+    border: 0;
+    outline: 0;
+    background: none;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .liquid-filter-defs {
+    position: absolute;
+    inline-size: 0;
+    block-size: 0;
+    pointer-events: none;
+  }
+
+  .landing-shell {
+    position: relative;
+    z-index: 1;
+    width: 100vw;
+    height: 100vh;
+    height: 100svh;
+    padding: 32px;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    justify-items: center;
+    gap: 0;
+  }
+
+  .app-window {
+    width: 85%;
+    min-width: 0;
+    height: 90%;
+    margin: 0 auto;
+    position: relative;
+    left: var(--drag-x, 0px);
+    top: var(--drag-y, 0px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #111111;
+    overflow: hidden;
+    box-shadow: 0 26px 58px rgba(0, 0, 0, 0.45);
+    animation: shell-float 22s ease-in-out infinite alternate;
+  }
+
+  .window-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .window-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .window-dot--red {
+    background: #ff5f57;
+  }
+
+  .window-dot--yellow {
+    background: #ffbd2f;
+  }
+
+  .window-dot--green {
+    background: #28c840;
+  }
+
+  @keyframes shell-float {
+    0% {
+      transform: translateY(0px);
+    }
+    100% {
+      transform: translateY(-5px);
+    }
+  }
+
+  .layout {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: var(--radius-shell);
+    background:
+      linear-gradient(170deg, var(--sidebar-glass-tint) 0%, rgba(255, 255, 255, 0.06) 68%, rgba(255, 255, 255, 0.08) 100%),
+      var(--sidebar-bg);
+    color: var(--text-primary);
+  }
+
+  .layout::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(600px 360px at 0% 0%, var(--layout-glow-1), transparent 65%),
+      radial-gradient(620px 380px at 24% 78%, var(--layout-glow-2), transparent 68%);
+    z-index: 0;
+  }
+
+  .layout > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .sidebar {
+    width: 292px;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    height: 100%;
+    overflow: hidden;
+    box-shadow: 10px 0 28px rgba(0, 0, 0, 0.42);
+    border-top-left-radius: var(--radius-shell);
+    border-bottom-left-radius: var(--radius-shell);
+  }
+
+  .sidebar-drag {
+    height: 32px;
+    flex-shrink: 0;
+    padding: 0 8px 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  [data-window-drag] {
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+  }
+
+  :global(body.is-dragging-window) {
+    user-select: none;
+  }
+
+  :global(body.is-dragging-window) [data-window-drag] {
+    cursor: grabbing;
+  }
+
+  .sidebar-collapse-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #bebebe;
+  }
+
+  .sidebar-collapse-btn:hover {
+    background: var(--sidebar-hover);
+    color: var(--text-primary);
+  }
+
+  .sidebar-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 0 10px;
+  }
+
+  .sidebar-section {
+    margin-top: 120px;
+  }
+
+  .sidebar-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 24px 8px 16px;
+    font-size: 13px;
+    color: #8a8f98;
+    letter-spacing: 0.05em;
+  }
+
+  .sidebar-section-header--direct {
+    margin-top: 20px;
+  }
+
+  .sidebar-section-label {
+    font-size: 13px;
+    font-weight: 400;
+    color: #8a8f98;
+  }
+
+  .sidebar-section-label-icon {
+    width: 14px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .sidebar-threads-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sidebar-add {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--text-muted);
+  }
+
+  .sidebar-add:hover {
+    background: var(--sidebar-hover);
+    color: var(--text-primary);
+  }
+
+  .sidebar-filter {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .sidebar-filter:hover {
+    background: var(--sidebar-hover);
+    color: var(--text-primary);
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+    padding: 5px 16px;
+    text-align: left;
+    color: var(--text-secondary);
+    font-size: 13px;
+    transition: background 0.22s ease, color 0.22s ease;
+  }
+
+  .sidebar-item:hover {
+    background: var(--sidebar-hover);
+    color: var(--text-primary);
+  }
+
+  .sidebar-item--active {
+    background: transparent;
+    color: var(--text-secondary);
+  }
+
+  .sidebar-item-hash {
+    font-size: 16px;
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+
+  .sidebar-item-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #f4f4f4;
+    opacity: 0.95;
+    flex-shrink: 0;
+  }
+
+  .sidebar-item-icon svg {
+    display: block;
+  }
+
+  .sidebar-item-icon .icon-expanded {
+    display: none;
+  }
+
+  .sidebar-item--expanded .sidebar-item-icon .icon-collapsed {
+    display: none;
+  }
+
+  .sidebar-item--expanded .sidebar-item-icon .icon-expanded {
+    display: block;
+  }
+
+  .sidebar-item-icon path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .sidebar-item-ai-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--bg-brand-main);
+    flex-shrink: 0;
+  }
+
+  .sidebar-item-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  .sidebar-dm-label {
+    flex: 1;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .sidebar-dm-count {
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #535663;
+    color: #f8fafc;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .sidebar-dm-names {
+    min-width: 0;
+  }
+
+  .sidebar-thread-list {
+    margin: 6px 14px 8px 32px;
+    padding-left: 0;
+    display: block;
+  }
+
+  .sidebar-thread-list-inner {
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sidebar-subthread-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 10px;
+    text-align: left;
+    color: #a6a6a6;
+    font-size: var(--font-ui-size);
+    line-height: 1.35;
+    font-weight: var(--font-ui-weight);
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+
+  .sidebar-subthread-main {
+    flex: 1;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sidebar-subthread-item:hover {
+    background: rgba(161, 161, 161, 0.13);
+    color: #dfdfdf;
+  }
+
+  .sidebar-subthread-item--active {
+    background: rgba(253, 178, 13, 0.24);
+    color: #f8fafc;
+  }
+
+  .sidebar-subthread-title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sidebar-subthread-time {
+    min-width: 52px;
+    text-align: right;
+    font-size: var(--font-ui-size);
+    color: #a6a6a6;
+    flex-shrink: 0;
+  }
+
+  .sidebar-activity {
+    margin: 10px 0 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-activity-item {
+    width: 100%;
+    padding: 8px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+    color: #d9d9d9;
+    text-align: left;
+  }
+
+  .sidebar-activity-main {
+    flex: 1;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sidebar-activity-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ffbb1c;
+    flex-shrink: 0;
+  }
+
+  .sidebar-activity-text {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar-activity-time {
+    flex-shrink: 0;
+    color: #d0d0d0;
+  }
+
+  .sidebar-activity-item:hover {
+    background: var(--sidebar-hover);
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .status-dot--online {
+    background: var(--status-online);
+  }
+
+  .sidebar-footer {
+    padding: 12px 14px 16px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-settings-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 6px;
+    color: #e4e4e4;
+    font-size: 13px;
+    text-align: left;
+  }
+
+  .sidebar-settings-btn:hover {
+    background: var(--sidebar-hover);
+    color: var(--text-primary);
+  }
+
+  .main-shell {
+    flex: 1;
+    display: flex;
+    min-width: 0;
+    background: var(--shell-bg);
+    border-radius: var(--radius-shell);
+    overflow: hidden;
+  }
+
+  .chat-view {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--main-bg);
+    --content-max-width: 980px;
+    --content-side-gap: 28px;
+  }
+
+  .glass {
+    position: relative;
+    overflow: hidden;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(160%) brightness(1.02);
+    -webkit-backdrop-filter: blur(20px) saturate(160%) brightness(1.02);
+  }
+
+  .glass::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .chat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px var(--content-side-gap);
+    flex-shrink: 0;
+  }
+
+  .chat-header-hash {
+    font-size: 17px;
+    color: var(--text-muted);
+  }
+
+  .chat-header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    overflow: hidden;
+    flex: 1;
+  }
+
+  .chat-header-title {
+    font-size: 15px;
+    color: var(--text-bright);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .chat-header-subtitle {
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .header-action-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    color: var(--text-secondary);
+  }
+
+  .header-action-btn:hover {
+    background: var(--sidebar-hover);
+    color: var(--text-primary);
+  }
+
+  .message-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 0 8px;
+  }
+
+  .channel-welcome {
+    width: min(calc(100% - (var(--content-side-gap) * 2)), var(--content-max-width));
+    margin: 0 auto 12px;
+    padding: 32px 4px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .channel-welcome-hash {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: var(--sidebar-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .channel-welcome h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  .channel-welcome p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+  }
+
+  .message {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: min(calc(100% - (var(--content-side-gap) * 2)), var(--content-max-width));
+    margin: 0 auto;
+    padding: 3px 4px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    transition: background 0.24s ease, border-color 0.24s ease;
+  }
+
+  .message + .message {
+    margin-top: 10px;
+  }
+
+  .message + .message--grouped {
+    margin-top: 2px;
+  }
+
+  .message--grouped {
+    padding-left: 47px;
+  }
+
+  .message:hover {
+    background: var(--msg-hover);
+    border-color: rgba(var(--brand-rgb), 0.34);
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: linear-gradient(160deg, #6b6b6b 0%, #525252 100%);
+    color: #f4f4f5;
+    font-size: 12px;
+  }
+
+  .avatar--icon {
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .avatar--icon img {
+    width: 100%;
+    height: 100%;
+    border-radius: 7px;
+    display: block;
+  }
+
+  .avatar--tiny {
+    width: 20px;
+    height: 20px;
+    border-radius: 8px;
+    font-size: 10px;
+  }
+
+  .message-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .message-grouped-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .message-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 2px;
+  }
+
+  .message-author {
+    font-size: 13px;
+    color: var(--text-bright);
+  }
+
+  .message-time {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .message-text {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.55;
+  }
+
+  .message-input-wrap {
+    width: min(calc(100% - (var(--content-side-gap) * 2)), var(--content-max-width));
+    margin: 0 auto;
+    padding: 12px 4px 8px;
+    flex-shrink: 0;
+  }
+
+  .message-input-box {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-composer);
+    overflow: visible;
+  }
+
+  .composer-liquid-glass {
+    background: var(--composer-input-bg);
+    border: 1px solid var(--composer-input-border);
+  }
+
+  .composer-liquid-glass:focus-within {
+    border-color: var(--composer-input-border-focus);
+  }
+
+  .composer-formatbar {
+    height: 38px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    color: #b8c4d9;
+  }
+
+  .composer-icon-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #d2dbea;
+    transition: background 0.22s ease, color 0.22s ease;
+  }
+
+  .composer-icon-btn:hover {
+    background: rgba(148, 163, 184, 0.22);
+    color: #f8fafc;
+  }
+
+  .composer-icon-btn--text {
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .composer-icon-btn--italic {
+    font-style: italic;
+  }
+
+  .composer-icon-btn--underline {
+    text-decoration: underline;
+  }
+
+  .message-input {
+    width: 100%;
+    padding: 14px 14px 18px;
+    font-size: 13px;
+    color: var(--text-primary);
+  }
+
+  .message-input::placeholder {
+    color: #9fb0c9;
+    opacity: 1;
+  }
+
+  .composer-actions {
+    height: 54px;
+    padding: 0 8px 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .send-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f2f2f2;
+    color: #202020;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+    transition: transform 0.22s ease, background 0.22s ease;
+  }
+
+  .send-btn:hover {
+    background: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  .composer-status-row {
+    width: min(calc(100% - (var(--content-side-gap) * 2)), var(--content-max-width));
+    margin: 0 auto;
+    margin-bottom: 6px;
+    padding: 6px 4px 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #aeb4bd;
+    font-size: 13px;
+  }
+
+  .composer-status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #b8bec8;
+    line-height: 1;
+  }
+
+  .composer-status-chip svg {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .composer-status-chip--accent {
+    color: #f59e0b;
+  }
+
+  .composer-status-caret {
+    font-size: 12px;
+    line-height: 1;
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 880px) {
+    .landing-shell {
+      width: 100vw;
+      height: 100vh;
+      height: 100svh;
+      padding: 32px;
+      margin: 0;
+      gap: 16px;
+      grid-template-columns: 1fr;
+    }
+
+    .app-window {
+      border-radius: 16px;
+    }
+
+    .layout {
+      height: 100%;
+      border-radius: var(--radius-shell);
+      min-height: 0;
+    }
+
+    .sidebar {
+      width: 246px;
+    }
+
+    .main-shell {
+      border-radius: var(--radius-shell);
+    }
+
+    .chat-view {
+      --content-side-gap: 16px;
+    }
+  }
+</style>
