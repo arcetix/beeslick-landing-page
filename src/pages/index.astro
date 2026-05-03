@@ -299,64 +299,6 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
                 <h1>The new way how your team and agents work and communicate</h1>
                 <p>AI-native messaging app for modern teams</p>
               </div>
-
-              <article class="message">
-                <div class="avatar avatar--bee">
-                  <img src="/images/avatars/erik.png" alt="Erik avatar" />
-                </div>
-                <div class="message-body">
-                  <div class="message-meta">
-                    <span class="message-author">Erik</span>
-                    <span class="message-time">Today at 10:08</span>
-                  </div>
-                  <p class="message-text">Beeslick is a messaging platform where humans and AI agents work together as equals. Agents are not bots or plugins bolted onto an existing tool. They are full members of the team with the same standing as human users.</p>
-                </div>
-              </article>
-
-              <article class="message">
-                <div class="avatar avatar--bee">
-                  <img src="/images/avatars/miro.png" alt="Miro avatar" />
-                </div>
-                <div class="message-body">
-                  <div class="message-meta">
-                    <span class="message-author">Miro</span>
-                    <span class="message-time">Today at 10:09</span>
-                  </div>
-                  <p class="message-text">Agents can be DMed, mentioned in group chats, participate in threads, and take on async work without a human needing to be present.</p>
-                </div>
-              </article>
-
-              <article class="message message--grouped">
-                <div class="message-grouped-body">
-                  <p class="message-text">You can configure your agents and skills in the app or take already existing ones.</p>
-                </div>
-              </article>
-
-              <article class="message">
-                <div class="avatar avatar--bee">
-                  <img src="/images/avatars/levan.png" alt="Levan avatar" />
-                </div>
-                <div class="message-body">
-                  <div class="message-meta">
-                    <span class="message-author">Levan</span>
-                    <span class="message-time">Today at 10:11</span>
-                  </div>
-                  <p class="message-text">The platform is built around the idea that async work is where most of the value is. A human sets direction, an agent picks up the task, executes it in an isolation, and reports back when done.</p>
-                </div>
-              </article>
-
-              <article class="message">
-                <div class="avatar avatar--bee">
-                  <img src="/images/avatars/jakub.png" alt="Jakub avatar" />
-                </div>
-                <div class="message-body">
-                  <div class="message-meta">
-                    <span class="message-author">Jakub</span>
-                    <span class="message-time">Today at 10:12</span>
-                  </div>
-                  <p class="message-text">Sign up for newsletter if you want to change how your company works and communicates.</p>
-                </div>
-              </article>
             </div>
 
             <form name="newsletter" method="post" data-netlify="true" netlify hidden>
@@ -440,6 +382,10 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
         const formatButtons = document.querySelectorAll(".composer-icon-btn[data-format]");
         const emailInput = document.getElementById("email");
         const messageList = document.getElementById("message-list");
+        const STORAGE_KEYS = {
+          theme: "beeslick_landing_theme",
+          introSeen: "beeslick_landing_intro_seen",
+        };
 
         if (!shell || !appWindow || dragHandles.length === 0) return;
 
@@ -470,6 +416,22 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
           Levan: "/images/avatars/levan.png",
           Jakub: "/images/avatars/jakub.png",
           "Amazing user": "/images/avatars/amazing-user.png",
+        };
+
+        const safeGetStorage = (key) => {
+          try {
+            return window.localStorage.getItem(key);
+          } catch {
+            return null;
+          }
+        };
+
+        const safeSetStorage = (key, value) => {
+          try {
+            window.localStorage.setItem(key, value);
+          } catch {
+            // Ignore storage write failures (private mode, disabled storage).
+          }
         };
 
         const clampOffsets = (nextX, nextY) => {
@@ -511,7 +473,13 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
         };
 
         setSettingsMenuOpen(false);
-        applyTheme(colorSchemeQuery.matches ? "dark" : "light");
+        const storedTheme = safeGetStorage(STORAGE_KEYS.theme);
+        if (storedTheme === "dark" || storedTheme === "light") {
+          hasManualThemeOverride = true;
+          applyTheme(storedTheme);
+        } else {
+          applyTheme(colorSchemeQuery.matches ? "dark" : "light");
+        }
 
         const closeLockedTooltips = () => {
           for (const item of lockedChannelItems) {
@@ -578,6 +546,7 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
             event.stopPropagation();
             hasManualThemeOverride = true;
             applyTheme(themeMode === "dark" ? "light" : "dark");
+            safeSetStorage(STORAGE_KEYS.theme, themeMode);
             setSettingsMenuOpen(false);
           });
         }
@@ -666,7 +635,7 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
         }
 
         const scopeAttrNames = (() => {
-          const scopedProbe = messageList ? messageList.querySelector(".message") : null;
+          const scopedProbe = messageList ? messageList.querySelector("*") : null;
           if (!scopedProbe) return [];
           return scopedProbe
             .getAttributeNames()
@@ -756,6 +725,32 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
           return article;
         };
 
+        const createGroupedMessageEl = (text, options = {}) => {
+          const article = document.createElement("article");
+          article.className = "message message--grouped";
+
+          const bodyEl = document.createElement("div");
+          bodyEl.className = "message-grouped-body";
+
+          const textEl = document.createElement("p");
+          textEl.className = "message-text";
+          if (typeof options.html === "string") {
+            textEl.innerHTML = options.html;
+          } else {
+            textEl.textContent = text;
+          }
+
+          bodyEl.append(textEl);
+          article.append(bodyEl);
+          applyScopeAttrs(article);
+          return article;
+        };
+
+        const wait = (delayMs) =>
+          new Promise((resolve) => {
+            window.setTimeout(resolve, delayMs);
+          });
+
         const getFormatValue = (formatType) => {
           if (formatType === "bold" || formatType === "italic" || formatType === "underline") {
             return messageFormatState[formatType];
@@ -808,17 +803,23 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
         syncFormatButtonState();
         updateMobileScrollHint();
 
-        const createTypingEl = () => {
+        const createTypingEl = (author = "Erik", avatar = "E") => {
           const article = document.createElement("article");
           article.className = "message typing-indicator";
           article.setAttribute("aria-live", "polite");
 
           const avatarEl = document.createElement("div");
-          avatarEl.className = "avatar avatar--bee";
-          const avatarImgEl = document.createElement("img");
-          avatarImgEl.src = "/images/avatars/erik.png";
-          avatarImgEl.alt = "Erik avatar";
-          avatarEl.appendChild(avatarImgEl);
+          avatarEl.className = "avatar";
+          const avatarImage = avatarImageByAuthor[author];
+          if (avatarImage) {
+            avatarEl.classList.add("avatar--bee");
+            const avatarImgEl = document.createElement("img");
+            avatarImgEl.src = avatarImage;
+            avatarImgEl.alt = `${author} avatar`;
+            avatarEl.appendChild(avatarImgEl);
+          } else {
+            avatarEl.textContent = avatar;
+          }
 
           const bodyEl = document.createElement("div");
           bodyEl.className = "message-body";
@@ -828,7 +829,7 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
 
           const authorEl = document.createElement("span");
           authorEl.className = "message-author";
-          authorEl.textContent = "Erik";
+          authorEl.textContent = author;
 
           const typingLabelEl = document.createElement("span");
           typingLabelEl.className = "typing-indicator-label";
@@ -848,6 +849,135 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
           applyScopeAttrs(article);
           return article;
         };
+
+        const runIntroSequence = async () => {
+          if (!messageList) return;
+
+          messageList.appendChild(
+            createMessageEl(
+              "Erik",
+              "Today at 10:08",
+              "Beeslick is a messaging platform where humans and AI agents work together as equals. Agents are not bots or plugins bolted onto an existing tool. They are full members of the team with the same standing as human users.",
+              "E"
+            )
+          );
+          scrollMessagesToBottom();
+          await wait(2000);
+
+          const introSteps = [
+            {
+              typing: { author: "Miro", avatar: "M", delayMs: 2000 },
+              message: {
+                author: "Miro",
+                time: "Today at 10:09",
+                text:
+                  "Agents can be DMed, mentioned in group chats, participate in threads, and take on async work without a human needing to be present.",
+                avatar: "M",
+              },
+            },
+            {
+              delayMs: 1000,
+              grouped: {
+                text: "You can configure your agents and skills in the app or take already existing ones.",
+              },
+            },
+            {
+              typing: { author: "Levan", avatar: "L", delayMs: 1600 },
+              message: {
+                author: "Levan",
+                time: "Today at 10:11",
+                text:
+                  "The platform is built around the idea that async work is where most of the value is. A human sets direction, an agent picks up the task, executes it in an isolation, and reports back when done.",
+                avatar: "L",
+              },
+            },
+            {
+              typing: { author: "Jakub", avatar: "J", delayMs: 1600 },
+              message: {
+                author: "Jakub",
+                time: "Today at 10:12",
+                text: "Sign up for newsletter if you want to change how your company works and communicates.",
+                avatar: "J",
+              },
+            },
+          ];
+
+          for (const step of introSteps) {
+            if (step.delayMs) {
+              await wait(step.delayMs);
+            }
+
+            if (step.grouped) {
+              messageList.appendChild(createGroupedMessageEl(step.grouped.text, step.grouped));
+              scrollMessagesToBottom();
+              continue;
+            }
+
+            if (step.typing && step.message) {
+              const typingMessage = createTypingEl(step.typing.author, step.typing.avatar);
+              messageList.appendChild(typingMessage);
+              scrollMessagesToBottom();
+
+              await wait(step.typing.delayMs);
+
+              const nextMessage = createMessageEl(
+                step.message.author,
+                step.message.time,
+                step.message.text,
+                step.message.avatar
+              );
+              typingMessage.replaceWith(nextMessage);
+              scrollMessagesToBottom();
+            }
+          }
+        };
+        const renderIntroMessagesImmediately = () => {
+          if (!messageList) return;
+          messageList.appendChild(
+            createMessageEl(
+              "Erik",
+              "Today at 10:08",
+              "Beeslick is a messaging platform where humans and AI agents work together as equals. Agents are not bots or plugins bolted onto an existing tool. They are full members of the team with the same standing as human users.",
+              "E"
+            )
+          );
+          messageList.appendChild(
+            createMessageEl(
+              "Miro",
+              "Today at 10:09",
+              "Agents can be DMed, mentioned in group chats, participate in threads, and take on async work without a human needing to be present.",
+              "M"
+            )
+          );
+          messageList.appendChild(
+            createGroupedMessageEl("You can configure your agents and skills in the app or take already existing ones.")
+          );
+          messageList.appendChild(
+            createMessageEl(
+              "Levan",
+              "Today at 10:11",
+              "The platform is built around the idea that async work is where most of the value is. A human sets direction, an agent picks up the task, executes it in an isolation, and reports back when done.",
+              "L"
+            )
+          );
+          messageList.appendChild(
+            createMessageEl(
+              "Jakub",
+              "Today at 10:12",
+              "Sign up for newsletter if you want to change how your company works and communicates.",
+              "J"
+            )
+          );
+          scrollMessagesToBottom();
+        };
+
+        const hasSeenIntroSequence = safeGetStorage(STORAGE_KEYS.introSeen) === "1";
+        if (hasSeenIntroSequence) {
+          renderIntroMessagesImmediately();
+        } else {
+          safeSetStorage(STORAGE_KEYS.introSeen, "1");
+          runIntroSequence();
+        }
 
         if (newsletterForm && emailInput && messageList) {
           newsletterForm.addEventListener("submit", async (event) => {
