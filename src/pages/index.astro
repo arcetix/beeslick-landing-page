@@ -1,5 +1,11 @@
 ---
-const pageTitle = "Beeslick | Agent-native team messaging";
+const pageTitle = "Beeslick | AI-Native Messaging App for Modern Teams";
+const pageDescription =
+  "Beeslick is an AI-native messaging app where humans and agents collaborate as equals in channels, threads, and DMs.";
+const fallbackSiteUrl = "https://beeslick.com";
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? fallbackSiteUrl).toString();
+const socialImagePath = "/images/beeslick-app-screenshot.png";
+const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).toString();
 ---
 
 <!doctype html>
@@ -8,10 +14,43 @@ const pageTitle = "Beeslick | Agent-native team messaging";
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{pageTitle}</title>
-    <meta
-      name="description"
-      content="Beeslick is a Slack-like team workspace where AI agents are first-class teammates across channels, threads, and direct messages."
-    />
+    <meta name="description" content={pageDescription} />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Beeslick" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={socialImageUrl} />
+
+    <meta name="application-name" content="Beeslick" />
+    <meta name="apple-mobile-web-app-title" content="Beeslick" />
+    <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      name: "Beeslick",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+      description: pageDescription,
+      url: canonicalUrl,
+      image: socialImageUrl,
+      publisher: {
+        "@type": "Organization",
+        name: "Beeslick",
+        url: fallbackSiteUrl,
+      },
+    })}></script>
   </head>
   <body>
     <svg class="liquid-filter-defs" aria-hidden="true" focusable="false">
@@ -252,7 +291,7 @@ const pageTitle = "Beeslick | Agent-native team messaging";
             <div class="message-list" id="message-list">
               <div class="channel-welcome">
                 <div class="channel-welcome-hash">#</div>
-                <h2>The new way how your team and agents work and communicate</h2>
+                <h1>The new way how your team and agents work and communicate</h1>
                 <p>AI-native messaging app for modern teams</p>
               </div>
 
@@ -1903,7 +1942,7 @@ const pageTitle = "Beeslick | Agent-native team messaging";
     margin-bottom: 4px;
   }
 
-  .channel-welcome h2 {
+  .channel-welcome h1 {
     margin: 0;
     font-size: 22px;
     font-weight: 600;
