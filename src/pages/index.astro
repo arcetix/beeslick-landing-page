@@ -680,9 +680,10 @@ const pageTitle = "Beeslick | Agent-native team messaging";
 
         const applyComposerFormatting = () => {
           if (!emailInput) return;
-          emailInput.style.fontWeight = messageFormatState.bold ? "700" : "";
-          emailInput.style.fontStyle = messageFormatState.italic ? "italic" : "";
-          emailInput.style.textDecoration = messageFormatState.underline ? "underline" : "";
+          const hasValue = emailInput.value.trim().length > 0;
+          emailInput.style.fontWeight = hasValue && messageFormatState.bold ? "700" : "";
+          emailInput.style.fontStyle = hasValue && messageFormatState.italic ? "italic" : "";
+          emailInput.style.textDecoration = hasValue && messageFormatState.underline ? "underline" : "";
         };
 
         const syncFormatButtonState = () => {
@@ -707,6 +708,9 @@ const pageTitle = "Beeslick | Agent-native team messaging";
             messageFormatState[formatType] = !messageFormatState[formatType];
             syncFormatButtonState();
           });
+        }
+        if (emailInput) {
+          emailInput.addEventListener("input", applyComposerFormatting);
         }
         syncFormatButtonState();
 
@@ -772,6 +776,7 @@ const pageTitle = "Beeslick | Agent-native team messaging";
             messageList.appendChild(userMessage);
             scrollMessagesToBottom();
             emailInput.value = "";
+            applyComposerFormatting();
 
             const typingMessage = createTypingEl();
             messageList.appendChild(typingMessage);
