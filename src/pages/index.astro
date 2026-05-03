@@ -35,6 +35,11 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
     <meta name="apple-mobile-web-app-title" content="Beeslick" />
     <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <link rel="preload" as="image" href="/images/avatars/erik.png" />
+    <link rel="preload" as="image" href="/images/avatars/miro.png" />
+    <link rel="preload" as="image" href="/images/avatars/levan.png" />
+    <link rel="preload" as="image" href="/images/avatars/jakub.png" />
+    <link rel="preload" as="image" href="/images/avatars/amazing-user.png" />
 
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
