@@ -1013,7 +1013,7 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
     --app-window-border: rgba(255, 255, 255, 0.08);
     --app-window-bg: #111111;
     --app-window-shadow: 0 26px 58px rgba(0, 0, 0, 0.45);
-    --sidebar-shadow: 10px 0 28px rgba(0, 0, 0, 0.42);
+    --sidebar-shadow: none;
     --sidebar-item-icon-color: #f4f4f4;
     --subthread-color: #a6a6a6;
     --subthread-hover-bg: rgba(161, 161, 161, 0.13);
@@ -1071,7 +1071,7 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
     --app-window-border: rgba(148, 163, 184, 0.28);
     --app-window-bg: #ffffff;
     --app-window-shadow: 0 26px 58px rgba(15, 23, 42, 0.22);
-    --sidebar-shadow: 10px 0 28px rgba(15, 23, 42, 0.16);
+    --sidebar-shadow: none;
     --sidebar-item-icon-color: #8f96a3;
     --subthread-color: #505869;
     --subthread-hover-bg: rgba(255, 255, 255, 0.42);
@@ -1228,21 +1228,12 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
     min-height: 0;
     overflow: hidden;
     border-radius: var(--radius-shell);
-    background:
-      linear-gradient(170deg, var(--sidebar-glass-tint) 0%, rgba(255, 255, 255, 0.06) 68%, rgba(255, 255, 255, 0.08) 100%),
-      var(--sidebar-bg);
+    background: var(--sidebar-bg);
     color: var(--text-primary);
   }
 
   .layout::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      radial-gradient(600px 360px at 0% 0%, var(--layout-glow-1), transparent 65%),
-      radial-gradient(620px 380px at 24% 78%, var(--layout-glow-2), transparent 68%);
-    z-index: 0;
+    content: none;
   }
 
   .layout > * {
@@ -1306,6 +1297,12 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0 0 10px;
+    scrollbar-width: none;
+  }
+
+  .sidebar-scroll::-webkit-scrollbar {
+    width: 0;
+    height: 0;
   }
 
   .sidebar-section {
@@ -1385,6 +1382,7 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
     text-align: left;
     color: var(--text-secondary);
     font-size: 13px;
+    cursor: text;
     transition: background 0.22s ease, color 0.22s ease;
   }
 
@@ -1396,12 +1394,12 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
   .sidebar-item--locked {
     cursor: not-allowed;
     position: relative;
-    color: #9ea5b2;
+    color: var(--text-secondary);
   }
 
   .sidebar-item--locked .sidebar-item-icon {
-    color: #b7bfcb;
-    opacity: 0.9;
+    color: var(--sidebar-item-icon-color);
+    opacity: 0.95;
   }
 
   .sidebar-item--locked:hover {
@@ -1552,13 +1550,14 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
     justify-content: space-between;
     gap: 10px;
     width: 100%;
-    padding: 7px 10px;
+    padding: 5px 10px;
     border-radius: 10px;
     text-align: left;
     color: var(--subthread-color);
     font-size: var(--font-ui-size);
     line-height: 1.35;
     font-weight: var(--font-ui-weight);
+    cursor: text;
     transition: background 0.12s ease, color 0.12s ease;
   }
 
@@ -1964,6 +1963,7 @@ const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).t
     padding: 3px 4px;
     border: 1px solid transparent;
     border-radius: 10px;
+    cursor: text;
     transition: background 0.24s ease, border-color 0.24s ease;
   }
 
