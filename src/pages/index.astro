@@ -1,13 +1,12 @@
 ---
-const pageTitle = "Beeslick | AI-native messaging for teams and agents";
+const pageTitle = "Beeslick | AI-native messaging for modern teams";
 const pageDescription =
   "Beeslick is the shared workspace where people, agents, channels, threads, and direct messages move work together.";
-const fallbackSiteUrl = "https://beeslick.com";
+const fallbackSiteUrl = "https://beeslick.ai";
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? fallbackSiteUrl).toString();
-const socialImagePath = "/images/beeslick-app-screenshot.png";
+const socialImagePath = "/images/beeslick-share-card.svg";
 const socialImageUrl = new URL(socialImagePath, Astro.site ?? fallbackSiteUrl).toString();
 
-const navItems = ["Product", "Agents", "About"];
 const chips = ["AI teammates", "Channels", "Threads", "DMs", "Context memory", "Fast decisions"];
 const problemTiles = [
   { label: "Apps", icon: "browser", tone: "muted" },
@@ -69,6 +68,15 @@ const solutionCards = [
     image: "/images/rex-figure-3.png",
   },
 ];
+const integrations = [
+  { name: "Confluence", icon: "https://cdn.simpleicons.org/confluence" },
+  { name: "Jira", icon: "https://cdn.simpleicons.org/jira" },
+  { name: "GitHub", icon: "https://cdn.simpleicons.org/github/FFFFFF" },
+  { name: "Google Drive", icon: "https://cdn.simpleicons.org/googledrive" },
+  { name: "Notion", icon: "https://cdn.simpleicons.org/notion/FFFFFF" },
+  { name: "Figma", icon: "https://cdn.simpleicons.org/figma" },
+  { name: "Linear", icon: "https://cdn.simpleicons.org/linear/FFFFFF" },
+];
 ---
 
 <!doctype html>
@@ -87,6 +95,8 @@ const solutionCards = [
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_US" />
 
     <meta name="twitter:card" content="summary_large_image" />
@@ -109,14 +119,15 @@ const solutionCards = [
           <span>beeslick</span>
         </a>
         <div class="nav-links" aria-label="Primary">
-          {navItems.map((item) => <a href={`#${item.toLowerCase()}`}>{item}</a>)}
+          <a href="#product">Product</a>
+          <a href="#join">Contact</a>
         </div>
         <a class="nav-cta" href="#join">Join the beta</a>
       </nav>
     </header>
 
     <main>
-      <section class="hero section-frame" id="product">
+      <section class="hero section-frame">
         <div class="hero-copy">
           <h1><span>The shared workspace</span><span>for people and agents</span></h1>
         </div>
@@ -356,7 +367,7 @@ const solutionCards = [
         </div>
       </section>
 
-      <section class="problem section-frame" id="about">
+      <section class="problem section-frame" id="product">
         <div>
           <p class="section-kicker">Problem</p>
           <h2>
@@ -504,6 +515,48 @@ const solutionCards = [
         </div>
       </section>
 
+      <section class="integrations section-frame" id="integrations">
+        <div class="integrations-copy">
+          <div class="dark-kicker">
+            <p>Integrations</p>
+          </div>
+          <h2>
+            Your company brain,
+            <span>built from every message.</span>
+          </h2>
+          <p>
+            Connect the tools where specs, tickets, docs, designs, and pull requests already live. Beeslick turns messages into thread context that agents and teammates can reuse without asking everyone to explain it again.
+          </p>
+        </div>
+        <div class="integration-map" aria-label="Beeslick integrations">
+          <div class="beeslick-node">
+            <img src="/images/beeslick-logo-borderless.png" alt="" />
+            <span>Beeslick</span>
+          </div>
+          <div class="integration-connector" aria-hidden="true">
+            <span></span>
+            <i></i>
+            <span></span>
+          </div>
+          <div class="integration-list">
+            <div class="integration-track">
+              {integrations.map((integration) => (
+                <div class="integration-pill">
+                  <span><img src={integration.icon} alt="" loading="lazy" /></span>
+                  <strong>{integration.name}</strong>
+                </div>
+              ))}
+              {integrations.map((integration) => (
+                <div class="integration-pill" aria-hidden="true">
+                  <span><img src={integration.icon} alt="" loading="lazy" /></span>
+                  <strong>{integration.name}</strong>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="booking section-frame" id="join">
         <div class="booking-panel">
           <div class="booking-story">
@@ -515,7 +568,6 @@ const solutionCards = [
             <ul>
               <li>See Beeslick with real channels and agent threads.</li>
               <li>Map your first AI teammate workflow.</li>
-              <li>Leave with a practical rollout path.</li>
             </ul>
             <small>Messaging - Agents - Team context</small>
           </div>
@@ -677,6 +729,7 @@ const solutionCards = [
     --night: #15120d;
     --night-2: #221b10;
     --dark: #15120d;
+    --footer-bg: #120f0c;
     --honey: #d9a23b;
     --secondary: #d9a23b;
     --radius-xs: 6px;
@@ -2301,7 +2354,7 @@ const solutionCards = [
     overflow: hidden;
     width: 100%;
     height: 560px;
-    background: #0f0c0b;
+    background: #120f0c;
     border-radius: 4px;
   }
 
@@ -2814,6 +2867,211 @@ const solutionCards = [
     }
   }
 
+  .integrations {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(420px, 560px);
+    gap: clamp(48px, 7vw, 96px);
+    align-items: center;
+    width: 100vw;
+    max-width: none;
+    min-height: 720px;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding-inline: max(var(--container-pad), calc((100vw - var(--container-width)) / 2 + var(--container-pad)));
+    padding-block: clamp(86px, 12vw, 150px);
+    color: #faf9f6;
+    background: var(--footer-bg);
+    border-top: 1px solid rgba(250, 249, 246, 0.08);
+    border-inline: 0;
+  }
+
+  .integrations::before,
+  .integrations::after {
+    display: none;
+  }
+
+  .dark-kicker {
+    display: flex;
+    align-items: center;
+    margin-bottom: 38px;
+  }
+
+  .dark-kicker p {
+    margin: 0;
+    color: rgba(250, 249, 246, 0.7);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.26px;
+    text-transform: uppercase;
+  }
+
+  .integrations-copy h2 {
+    max-width: 560px;
+    margin: 0;
+    color: #faf9f6;
+    font-size: clamp(40px, 5vw, 58px);
+    font-weight: 300;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+  }
+
+  .integrations-copy h2 span {
+    display: block;
+    color: rgba(250, 249, 246, 0.48);
+  }
+
+  .integrations-copy > p {
+    max-width: 440px;
+    margin: 30px 0 0;
+    color: rgba(250, 249, 246, 0.64);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .integration-map {
+    display: grid;
+    grid-template-columns: auto minmax(80px, 144px) minmax(190px, 240px);
+    align-items: center;
+    justify-content: end;
+    gap: 18px;
+    min-width: 0;
+  }
+
+  .beeslick-node,
+  .integration-pill {
+    display: inline-flex;
+    align-items: center;
+    height: 56px;
+    color: #faf9f6;
+    background: rgba(250, 249, 246, 0.07);
+    border-radius: 999px;
+  }
+
+  .beeslick-node {
+    gap: 8px;
+    padding: 0 26px 0 22px;
+    color: #120f0c;
+    background: #faf9f6;
+    box-shadow: 0 0 80px rgba(250, 249, 246, 0.1);
+  }
+
+  .beeslick-node img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+  }
+
+  .beeslick-node span,
+  .integration-pill strong {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .integration-connector {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    min-width: 80px;
+  }
+
+  .integration-connector span {
+    width: 4px;
+    height: 4px;
+    background: #faf9f6;
+    border-radius: 999px;
+  }
+
+  .integration-connector i {
+    height: 1px;
+    background: rgba(250, 249, 246, 0.34);
+  }
+
+  .integration-list {
+    position: relative;
+    overflow: hidden;
+    height: 436px;
+    min-width: 0;
+  }
+
+  .integration-list::before,
+  .integration-list::after {
+    position: absolute;
+    inset-inline: 0;
+    z-index: 2;
+    height: 86px;
+    content: "";
+    pointer-events: none;
+  }
+
+  .integration-list::before {
+    top: 0;
+    background: linear-gradient(to bottom, var(--footer-bg) 0%, rgba(18, 15, 12, 0) 100%);
+  }
+
+  .integration-list::after {
+    bottom: 0;
+    background: linear-gradient(to top, var(--footer-bg) 0%, rgba(18, 15, 12, 0) 100%);
+  }
+
+  .integration-track {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    animation: integrations-marquee 28s linear infinite;
+    will-change: transform;
+  }
+
+  .integration-list:hover .integration-track {
+    animation-play-state: paused;
+  }
+
+  .integration-pill {
+    flex: 0 0 auto;
+    gap: 8px;
+    width: max-content;
+    max-width: 100%;
+    padding: 0 28px 0 22px;
+    transition: background 180ms ease, transform 180ms ease;
+  }
+
+  .integration-pill:hover {
+    background: rgba(250, 249, 246, 0.12);
+    transform: translateX(-2px);
+  }
+
+  .integration-pill span {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(250, 249, 246, 0.08);
+    border: 1px solid rgba(250, 249, 246, 0.08);
+    border-radius: 999px;
+  }
+
+  .integration-pill span img {
+    width: 17px;
+    height: 17px;
+    object-fit: contain;
+  }
+
+  @keyframes integrations-marquee {
+    from {
+      transform: translateY(0);
+    }
+
+    to {
+      transform: translateY(-50%);
+    }
+  }
+
   .booking {
     padding-block: clamp(96px, 13vw, 180px);
     border-top: 1px solid var(--line);
@@ -3003,7 +3261,7 @@ const solutionCards = [
   }
 
   .site-footer {
-    background: #120f0c;
+    background: var(--footer-bg);
     color: #faf9f6;
   }
 
@@ -3186,6 +3444,7 @@ const solutionCards = [
 
     .hero,
     .problem,
+    .integrations,
     .booking-panel {
       grid-template-columns: 1fr;
     }
@@ -3253,6 +3512,16 @@ const solutionCards = [
 
     .solution-grid {
       grid-template-columns: 1fr;
+    }
+
+    .integrations {
+      min-height: auto;
+      gap: 52px;
+    }
+
+    .integration-map {
+      grid-template-columns: auto minmax(60px, 1fr) minmax(180px, 240px);
+      justify-content: start;
     }
 
     .card-media {
@@ -3389,6 +3658,7 @@ const solutionCards = [
 
     .problem,
     .solution,
+    .integrations,
     .booking {
       padding-block: 76px;
     }
@@ -3404,6 +3674,44 @@ const solutionCards = [
       aspect-ratio: auto;
       height: 620px;
       min-height: 0;
+    }
+
+    .integrations-copy h2 {
+      font-size: 36px;
+    }
+
+    .integration-map {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .beeslick-node {
+      width: max-content;
+    }
+
+    .integration-connector {
+      grid-template-columns: auto;
+      width: 1px;
+      min-width: 0;
+      height: 42px;
+      margin-left: 28px;
+    }
+
+    .integration-connector span {
+      margin-left: -1.5px;
+    }
+
+    .integration-connector i {
+      width: 1px;
+      height: 100%;
+    }
+
+    .integration-list {
+      height: 326px;
+    }
+
+    .integration-pill {
+      height: 52px;
     }
 
     .solution-card-copy {

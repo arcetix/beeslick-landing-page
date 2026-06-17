@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Beeslick share card</title>
+  <desc id="desc">A light Beeslick link preview card with centered logo and product tagline.</desc>
+  <rect width="1200" height="630" fill="#faf9f6"/>
+  <g fill="none" stroke="#120f0c" stroke-width="1.25" opacity="0.08">
+    <path d="M-70 502C114 342 292 252 500 248c235-5 403 95 778 34"/>
+    <path d="M32 642C152 488 238 337 276 190 322 12 428-116 610-130"/>
+    <path d="M1120-88C1012 112 998 270 1078 386c58 84 154 137 208 246"/>
+    <path d="M-112 180C70 60 324 58 650 175c262 94 455 96 616-24"/>
+    <path d="M736-124C676 14 669 157 716 304c42 132 125 223 286 332"/>
+  </g>
+  <g transform="translate(0 -6)">
+    <g transform="translate(366 219)">
+      <circle cx="56" cy="56" r="42" fill="#120f0c"/>
+      <g fill="none" stroke="#faf9f6" stroke-width="5" stroke-linecap="round">
+        <path d="M56 24c16 0 28 11 28 26 0 21-17 36-28 48-11-12-28-27-28-48 0-15 12-26 28-26Z"/>
+        <path d="M29 51c-12 8-13 25-3 35 11 12 30 8 40-1"/>
+        <path d="M83 51c12 8 13 25 3 35-11 12-30 8-40-1"/>
+      </g>
+    </g>
+    <text x="502" y="304" fill="#120f0c" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="500" letter-spacing="-1">beeslick</text>
+    <text x="600" y="431" text-anchor="middle" fill="#120f0c" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="500">beeslick.ai</text>
+  </g>
+  <rect x="0" y="515" width="1200" height="115" fill="#e8e8e4"/>
+  <text x="40" y="574" fill="#10100f" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">AI-native messaging for modern teams</text>
+  <text x="40" y="613" fill="#868681" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">beeslick.ai</text>
+</svg>
