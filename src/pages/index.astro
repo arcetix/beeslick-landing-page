@@ -150,6 +150,7 @@ const integrations = [
         </div>
         <div class="product-stage" aria-label="Beeslick app preview">
           <div class="stage-image" aria-hidden="true"></div>
+          <img class="mobile-stage-preview" src="/images/beeslick-app-screenshot.png" alt="" aria-hidden="true" loading="lazy" />
           <div class="app-preview">
             <div class="app-shell">
               <aside class="app-sidebar" aria-label="Preview sidebar">
@@ -1155,6 +1156,10 @@ const integrations = [
     background: url("/images/rex-hero-bg.webp") center 42% / cover no-repeat;
     border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 14px;
+  }
+
+  .mobile-stage-preview {
+    display: none;
   }
 
   .app-preview {
@@ -3593,6 +3598,20 @@ const integrations = [
       margin-bottom: 80px;
     }
 
+    .mobile-stage-preview {
+      position: absolute;
+      inset: 20px 0 0 20px;
+      z-index: 2;
+      display: block;
+      width: calc(100% - 20px);
+      height: calc(100% - 20px);
+      object-fit: cover;
+      object-position: 14% top;
+      border: 1px solid rgba(59, 42, 5, 0.1);
+      border-radius: 8px 0 0 0;
+      box-shadow: 0 18px 38px -18px rgba(59, 42, 5, 0.26);
+    }
+
     .app-shell {
       grid-template-columns: 1fr;
       height: 100%;
@@ -3608,8 +3627,7 @@ const integrations = [
     }
 
     .app-preview {
-      top: 20px;
-      left: 20px;
+      display: none;
     }
 
     .mock-main {
