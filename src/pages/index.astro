@@ -427,8 +427,16 @@ const integrations = [
                   <div class="floating-note">
                     <span>
                       <span class="floating-note-tag floating-note-tooltip" data-tooltip="Adam is a backend engineer agent that can create tickets, open PRs, and use thread context to implement server-side work.">Adam</span>
-                      build the VIP database from
-                      <span class="floating-note-link floating-note-tooltip" data-tooltip="Confluence requirements doc connected to the thread, so the agent can use the source context.">VIP requirements</span>
+                      model the VIP access tables and permission checks from
+                      <span class="floating-note-link floating-note-tooltip" data-tooltip="Confluence requirements doc connected to the thread, so the agent can use the source context.">
+                        <svg viewBox="0 0 16 16" aria-hidden="true">
+                          <path d="M4.5 2.5h4.1l2.9 2.9v8.1h-7z" />
+                          <path d="M8.5 2.5v3h3" />
+                          <path d="M6.2 8.4h3.6M6.2 10.5h2.7" />
+                        </svg>
+                        VIP requirements
+                      </span>
+                      and create a PR. Tag me back once you're done.
                     </span>
                     <span class="floating-note-arrow" aria-hidden="true">
                       <svg viewBox="0 0 20 20">
@@ -488,12 +496,11 @@ const integrations = [
                 {index === 2 && (
                   <div class="case-panel">
                     <div class="case-panel-header">
-                      <b>Thread active</b>
+                      <b>Thread based</b>
                     </div>
-                    <div class="case-timeline">
-                      <span>Sofia drafted next steps</span>
-                      <span>Adam approved the plan</span>
-                      <span>Shared to the team</span>
+                    <div class="case-thread">
+                      <span class="case-thread-option case-thread-option-active">Admin controls</span>
+                      <span class="case-thread-option">Member feed design</span>
                     </div>
                   </div>
                 )}
@@ -2467,7 +2474,7 @@ const integrations = [
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    margin: 0 3px;
+    margin: 0;
     padding: 4px 8px;
     color: #fff;
     vertical-align: baseline;
@@ -2487,11 +2494,11 @@ const integrations = [
 
   .floating-note-link {
     position: relative;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 5px;
     width: max-content;
-    margin: 4px 0 0;
+    margin: 0;
     padding: 4px 8px;
     max-width: 100%;
     color: #7db5ff;
@@ -2506,6 +2513,17 @@ const integrations = [
 
   .floating-note-link::before {
     content: none;
+  }
+
+  .floating-note-link svg {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .floating-note-tooltip {
@@ -2768,40 +2786,29 @@ const integrations = [
     line-height: 1.2;
   }
 
-  .case-timeline {
-    position: relative;
+  .case-thread {
     display: grid;
-    gap: 10px;
-    padding-left: 28px;
+    gap: 7px;
   }
 
-  .case-timeline::before {
-    position: absolute;
-    top: 7px;
-    bottom: 7px;
-    left: 6px;
-    width: 1px;
-    content: "";
-    background: rgba(255, 255, 255, 0.64);
-  }
-
-  .case-timeline span {
-    position: relative;
+  .case-thread-option {
+    display: flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0 10px;
     color: rgba(255, 255, 255, 0.74);
-    font-size: 12px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
     font-weight: 500;
-    line-height: 1.4;
+    font-size: 12px;
+    line-height: 1;
   }
 
-  .case-timeline span::before {
-    position: absolute;
-    top: 0.62em;
-    left: -24.5px;
-    width: 5px;
-    height: 5px;
-    content: "";
-    background: #fff;
-    border-radius: 999px;
+  .case-thread-option-active {
+    color: #fff;
+    background: rgba(217, 162, 59, 0.2);
+    border-color: rgba(217, 162, 59, 0.24);
   }
 
   .solution-card-copy {
@@ -3582,6 +3589,7 @@ const integrations = [
     }
 
     .product-stage {
+      aspect-ratio: 500 / 622;
       margin-bottom: 80px;
     }
 
